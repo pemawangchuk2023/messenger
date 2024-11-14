@@ -51,6 +51,8 @@ model Conversation {
   isGroup        Boolean?
   messages       Message[]
   users          User[]     @relation("UserConversations")
+  
+  userIds        Int[]  
 }
 
 model Message {

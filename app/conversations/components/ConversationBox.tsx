@@ -14,13 +14,13 @@ interface ConversationBoxProps {
 }
 const ConversationBox = ({ data, selected }: ConversationBoxProps) => {
   const otherUser = useOtherUser(data);
-  console.log("otherUser in ConversationBox:", otherUser);
-  
+
   const session = useSession();
   const router = useRouter();
 
   const handleClick = useCallback(() => {
-    router.push(`/conversation/${data.id}`);
+    console.log("Navigating to conversation with ID:", data.id);
+    router.push(`/conversations/${data.id}`);
   }, [data.id, router]);
 
   const lastMessage = useMemo(() => {
@@ -67,7 +67,16 @@ const ConversationBox = ({ data, selected }: ConversationBoxProps) => {
         <div className="focus:outline-none">
           <div className="flex justify-between items-center mb-1">
             <p>{data.name || otherUser.name}</p>
+            
+            {lastMessage?.createdAt && (
+              <p className="text-xs text-gray-400 font-light">
+                {format(new Date(lastMessage.createdAt), "p")}
+              </p>
+            )}
           </div>
+          <p className={cn("truncate text-sm", hasSeen ? "text-gray-500" : "text-black font-medium")}>
+            {lastMessageText}
+          </p>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 "use client";
+
 import useConversation from "@/app/hooks/useConversation";
 import { FullConversationType } from "@/app/types";
 import { cn } from "@/lib/utils";
@@ -35,7 +36,7 @@ const ConversationList = ({ initialItems }: ConversationListProps) => {
           <ConversationBox
             key={item.id}
             data={item}
-            selected={conversationId=== item.id} 
+            selected={parseInt(conversationId) === item.id}
           />
         ))}
       </div>

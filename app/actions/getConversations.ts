@@ -5,7 +5,7 @@ import { FullConversationType } from "@/app/types";
 const getConversations = async (): Promise<FullConversationType[]> => {
   const currentUser = await getCurrentUser();
 
-  console.log("The current user is", currentUser); // Log current user
+  console.log("The current user is", currentUser);
 
   if (!currentUser?.id) {
     return [];
@@ -36,7 +36,10 @@ const getConversations = async (): Promise<FullConversationType[]> => {
       },
     })) as FullConversationType[];
 
-    console.log("Fetched conversations:", conversations); // Log fetched conversations
+    console.log("Fetched conversations:", conversations);
+    conversations.forEach((conv, index) => {
+      console.log(`Conversation ${index + 1}:`, conv);
+    });
     return conversations;
   } catch (error) {
     console.error("Error fetching conversations:", error);
