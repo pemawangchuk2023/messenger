@@ -14,5 +14,9 @@ export const pusherClient = new PusherClient(
   {
     cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
     forceTLS: true,
+    channelAuthorization: {
+      endpoint: '/api/pusher/auth',
+      transport: 'ajax',
+    },
   }
 );

@@ -56,9 +56,6 @@ export async function POST(request: Request) {
         sender: true,
       },
     });
-
-    console.log('New message created:', newMessage);
-
     // Step 6: Update the conversation
     const updatedConversation = await prisma.conversation.update({
       where: { id: conversation.id },
@@ -72,8 +69,6 @@ export async function POST(request: Request) {
       },
     });
 
-    console.log('Conversation updated successfully:', updatedConversation);
-
     const trimmedMessage = {
       id: newMessage.id,
       body: newMessage.body,
@@ -86,11 +81,6 @@ export async function POST(request: Request) {
       },
     };
 
-    console.log('Triggering Pusher event for message:new:', {
-      conversationId: String(conversationId),
-      message: trimmedMessage,
-    });
-
     // Trigger Pusher for new message
 
     await pusherServer.trigger(
@@ -98,7 +88,6 @@ export async function POST(request: Request) {
       'messages:new',
       trimmedMessage
     );
-    console.log('Pusher event for message:new triggered successfully');
 
     // Get last message
     const lastMessage =
@@ -106,11 +95,6 @@ export async function POST(request: Request) {
 
     // Trigger Pusher for each user's conversation update
     updatedConversation.users.map(async (user) => {
-      console.log('Triggering Pusher event for message:update:', {
-        email: user.email,
-        lastMessage,
-      });
-
       try {
         await pusherServer.trigger(user.email!, 'message:update', {
           id: conversationId,

@@ -63,7 +63,6 @@ const SettingsModal = ({
         method: 'POST',
         body: formData,
       });
-
       if (!response.ok) {
         throw new Error('Upload failed');
       }

@@ -18,6 +18,7 @@ import { Mail, Trash2, Users } from 'lucide-react';
 import Modal from '@/app/components/Modal';
 import AvatarGroup from '@/app/components/AvatarGroup';
 import { Badge } from '@/components/ui/badge';
+import useActiveList from '@/app/hooks/useActiveList';
 
 interface ProfileDrawerProps {
   isOpen: boolean;
@@ -30,6 +31,9 @@ interface ProfileDrawerProps {
 const ProfileDrawer = ({ isOpen, onClose, data }: ProfileDrawerProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const otherUser = useOtherUser(data);
+  const { members } = useActiveList();
+
+  const isActive = members.indexOf(otherUser?.email!) !== -1;
 
   const joinedDate = useMemo(() => {
     return format(new Date(otherUser.createdAt), 'PP');
@@ -43,7 +47,7 @@ const ProfileDrawer = ({ isOpen, onClose, data }: ProfileDrawerProps) => {
     if (data.isGroup) {
       return `${data.users.length} members`;
     }
-    return 'Active';
+    return isActive ? 'Active' : 'Offline';
   }, [data.isGroup, data.users.length]);
 
   return (

@@ -39,7 +39,18 @@ const Body = ({ Initialmessages }: BodyProps) => {
       bottomRef.current?.scrollIntoView();
     };
 
+    const updatedMessageHandler = (newMessage: FullMessageType) => {
+      setMessages((current) =>
+        current.map((currentMessage) => {
+          if (currentMessage.id === newMessage.id) {
+            return newMessage;
+          }
+          return currentMessage;
+        })
+      );
+    };
     pusherClient.bind('messages:new', messageHandler);
+    pusherClient.bind('message:update', updatedMessageHandler);
 
     return () => {
       pusherClient.unbind('messages:new', messageHandler);

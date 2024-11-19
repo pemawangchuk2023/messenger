@@ -1,6 +1,7 @@
 import getCurrentUser from '@/app/actions/getCurrentUser';
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prismadb';
+import { pusherServer } from '@/lib/pusher';
 
 export async function DELETE(
   request: Request,
@@ -26,10 +27,18 @@ export async function DELETE(
       include: { users: true },
     });
 
+    existingConversation?.users.forEach((user) => {
+      if (user.id === currentUser.id) {
+        pusherServer.trigger(
+          user.email!,
+          'conversation:remove',
+          existingConversation
+        );
+      }
+    });
     if (!existingConversation) {
       return new NextResponse('Conversation Not Found', { status: 404 });
     }
-    console.log('Existing conversation:', existingConversation);
 
     // Step 4: Validate the user is part of the conversation
     const isParticipant = existingConversation.users.some(
@@ -44,8 +53,6 @@ export async function DELETE(
     const deletedConversation = await prisma.conversation.delete({
       where: { id: Number(conversationId) },
     });
-
-    console.log('Conversation deleted successfully:', deletedConversation);
 
     // Step 6: Return success response
     return NextResponse.json(deletedConversation);
