@@ -4,7 +4,7 @@ import AvatarCom from '@/app/components/AvatarCom';
 import useOtherUser from '@/app/hooks/userOtherUser';
 import { Conversation, User } from '@prisma/client';
 import Link from 'next/link';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { HiChevronLeft, HiEllipsisHorizontal } from 'react-icons/hi2';
 import ProfileDrawer from './ProfileDrawer';
 import AvatarGroup from '@/app/components/AvatarGroup';
@@ -22,12 +22,17 @@ const Header = ({ conversation }: HeaderProps) => {
 
   const isActive = members.indexOf(otherUser?.email!) !== -1;
 
+  useEffect(() => {
+    console.log('Header re-rendered:', { isActive, members });
+  }, [isActive, members]);
+
   const statusText = useMemo(() => {
     if (conversation.isGroup) {
       return `${conversation.users.length} members`;
     }
     return isActive ? 'Active' : 'Offline';
-  }, [conversation]);
+  }, [conversation, isActive, members]);
+
   return (
     <>
       <ProfileDrawer
